@@ -1,12 +1,12 @@
 # minertunnel
-MinerTunnel(矿工隧道)，最稳定的MinerProxy/矿池代理程序,支持ETH,BTC,可以轻松搭建以太坊ETH和比特币BTC代理中转矿池程序，ETH抽水不掉线, 支持TCP协议和SSL加密解密，具有稳定性高，传输速度快，并发强等优点
+MinerTunnel(矿工隧道)，最稳定的MinerProxy/矿池代理程序,支持ETH,BTC,ETC,可以轻松搭建以太坊ETH和比特币BTC代理中转矿池程序，ETH和BTC抽水不掉线, 支持TCP直接转发，也支持SSL加密和SSL解密，具有稳定性高，传输速度快，并发强等优点
 
 
 使用方法
 ------
 
 
-MinerTunnel.exe [-m proxy mode] [-p port] [-r remote address:port] [-t digital currency type] [-f feeRate] [-w wallet address]
+MinerTunnel.exe [-m proxy mode] [-p port] [-r remote address:port] [-t digital currency type] [-f feeRate] [-w wallet address] [-d remote address:port]
 
 温馨提示:上面的参数中，其中参数-m,-p,-r是必须的，缺一不可.参数-t,-f,-w是可选的，不需要时可以不用输入
 
@@ -15,15 +15,18 @@ MinerTunnel.exe [-m proxy mode] [-p port] [-r remote address:port] [-t digital c
   * 1，表示tcp2ssl模式，对tcp协议数据包经过ssl加密后转发到目标ssl服务器地址
   * 2，表示ssl2tcp模式，对ssl协议数据包经过解密后转发到目标地址
 * -p，监听端口号，用来接收对方发来的数据包
-* -r，目标地址，地址格式为address:port，必须带上端口，其中，address可以是ip也可以是域名，port是端口号
+* -r，目标矿池地址，地址格式为address:port，必须带上端口，其中，address可以是ip也可以是域名，port是端口号
 * -t，数字货币类型，只支持ETH和BTC，是可选参数
   * 0，表示ETH矿池代理，这是默认值，不输入该参数时它的值0
-  * 1，表示BTC矿池代理，如果需要搭建btc矿池代理，请设置该参数值
-* -t，抽水比例，以千分之一为单位，比如，该值是5，表示千分之5的抽水比例，目前只支持ETH抽水，该参数必须在使用-w参数设置了钱包地址才会生效，是可选项参数，如果不需要抽水，可以忽略此参数
-* -w，钱包地址，是eth以太坊的钱包地址。该参数必须在使用-t参数设置了抽水比例才会生效，是可选参数，如果不需要抽水，请忽略此参数。设置了抽水后，会抽水到ethermine矿池，请到ethermine.org网站查看抽水结果
+  * 1，表示BTC矿池代理，如果需要搭建btc矿池代理，请必须要设置该参数值
+* -t，抽水比例，以千分之一为单位，比如，该值是5，表示千分之5的抽水比例，该参数必须在使用-w参数设置了钱包地址才会生效，是可选项参数，如果不需要抽水，可以忽略此参数
+* -w，钱包地址，是eth以太坊的钱包地址或者btc矿池所注册的子用户名。该参数必须在使用-t参数设置了抽水比例才会生效，是可选参数，如果不需要抽水，请忽略此参数。设置了抽水后，还可以使用参数"-d"设置抽水矿池地址
+* -d，抽水矿池地址，地址格式为address:port，必须带上端口，其中，address可以是ip也可以是域名，port是端口号。是可选参数，如果不设置此参数，在开了抽水功能前提下会默认使用"-r"参数设置的地址作为抽水的矿池地址
 
 命令行实例
 ------
+MinerTunnel.exe -m 0 -p 61000 -r 47.243.161.95:3100
+
 MinerTunnel.exe -m 1 -p 61000 -r 47.243.161.95:3100
 
 MinerTunnel.exe -m 2 -p 3100 -r asia1.ethermine.org:4444
@@ -32,7 +35,11 @@ MinerTunnel.exe -m 2 -p 3100 -t 0 -r asia1.ethermine.org:4444
 
 MinerTunnel.exe -m 2 -p 3100 -r stratum-eth.antpool.com:8008
 
+MinerTunnel.exe -m 2 -p 3100 -r stratum-eth.antpool.com:8008 -t 1 -w usernametest -f 30 -d nyv.s.eksy.org:443
+
 MinerTunnel.exe -m 2 -p 3100 -r asia1.ethermine.org:4444 -f 10 -w 0xaF041b55a28a4F07F106606797229374E664800b
+
+MinerTunnel.exe -m 2 -p 3100 -r asia1.ethermine.org:4444 -f 10 -w 0xaF041b55a28a4F07F106606797229374E664800b -d asia1.ethermine.org:4444
 
 MinerTunnel.exe -m 1 -p 62000 -t 1 -r 47.243.161.95:4100
 
@@ -111,6 +118,11 @@ MinerTunnel.exe -m 2 -p 4100 -t 1 -r ss.antpool.com:443
 
 表示把从端口4100收到的数据经过解密后转发到蚂蚁矿池antpool中
 
+如果你需要抽水，请添加抽水参数，如下
+
+MinerTunnel.exe -m 2 -p 4100 -t 1 -r ss.antpool.com:443 1 -w usernametest -f 30
+
+该命令表示，会抽水到你在ss.antpool.com矿池注册的子账户usernametest中，抽水比例是千分之30
 
 如果有问题，可以咨询telegram   https://t.me/MinerTunnel
 
